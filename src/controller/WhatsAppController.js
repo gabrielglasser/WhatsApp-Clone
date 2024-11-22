@@ -21,12 +21,12 @@ class WhatsAppController {
   elementsPrototype() {
 
     Element.prototype.hide = function () {
-      this.style.dysplay = 'none';
+      this.style.display = 'none';
       return this;
     }
 
     Element.prototype.show = function () {
-      this.style.dysplay = 'block';
+      this.style.display = 'block';
       return this;
     }
 
