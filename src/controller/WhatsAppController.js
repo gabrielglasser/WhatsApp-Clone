@@ -196,7 +196,7 @@ class WhatsAppController {
       this.el.modalContacts.show()
     });
 
-    this.el.btnCloseModalContacts.on('click', e=> {
+    this.el.btnCloseModalContacts.on('click', e => {
       this.el.modalContacts.hide()
     })
 
@@ -209,10 +209,43 @@ class WhatsAppController {
     this.el.btnCancelMicrophone.on('click', e => {
       this.closeRecordMicrophone();
     });
-   
+
     this.el.btnFinishMicrophone.on('click', e => {
       this.closeRecordMicrophone();
     });
+
+     this.el.inputText.on('keypress', e => {
+      if (e.key === 'Enter' && !e.ctrlKey)  {
+        e.preventDefault();
+        this.el.btnSend.click()
+      }
+     })  
+
+    this.el.inputText.on('keyup', e => {
+      if (this.el.inputText.innerHTML.length) {
+        this.el.inputPlaceholder.hide();
+        this.el.btnSendMicrophone.hide();
+        this.el.btnSend.show()
+      } else {
+        this.el.inputPlaceholder.show();
+        this.el.btnSendMicrophone.show();
+        this.el.btnSend.hide()
+      }
+    })
+
+    this.el.btnSend.on('click', e => {
+
+    })
+
+    this.el.btnEmojis.on('click', e => {
+      this.el.panelEmojis.toggleClass('open')
+    })
+
+    this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji => {
+      emoji.on('click', e => {
+        this.el.inputText.innerHTML += item.innerHTML;
+      })
+    })
 
   }
   startRecordMicrophoneTime() {
