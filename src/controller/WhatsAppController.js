@@ -7,10 +7,27 @@ import { Firebase } from './../utils/Firebase';
 export default class WhatsAppController {
 
   constructor() {
+    this._firebase = new Firebase();
+    this.initAuth();
     this.elementsPrototype();
     this.loadElements();
     this.initEvents();
-    this._firebase = new Firebase();
+  }
+
+  initAuth() {
+
+    this._firebase.initAuth()
+      .then(response=> {
+
+        this._user = response.user;
+        this.el.appContent.css({
+          display: 'flex'
+        });
+
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
   }
 
@@ -292,10 +309,10 @@ export default class WhatsAppController {
       this._microphoneController.on('ready', audio => {
 
         this._microphoneController.startRecorder();
-        
+
       })
       this._microphoneController.on('recordtimer', timer => {
-        
+
         this.el.recordMicrophoneTimer.innerHTML = Format.toTime(timer);
 
       })
@@ -303,7 +320,7 @@ export default class WhatsAppController {
 
     this.el.btnCancelMicrophone.on('click', e => {
       this._microphoneController.stopRecorder();
-      
+
       this.closeRecordMicrophone();
     });
 
