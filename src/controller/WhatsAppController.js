@@ -33,7 +33,7 @@ export default class WhatsAppController {
             let photo = this.el.imgPanelEditProfile;
             photo.src = data.photo;
             photo.show();
-            this.el.imgDefaultPanelEditProfile.hide();
+            this.el.imgPanelEditProfile.hide();
 
             let photo2 = this.el.myPhoto.querySelector('img')
             photo2.src = data.photo;
@@ -133,7 +133,21 @@ export default class WhatsAppController {
           img.show();
         }
 
-        div.querySelector('.photo')
+        div.on('click', () => {
+          
+          this.el.activeName.innerHTML = contact.name;
+          this.el.activeStatus.innerHTML = contact.status;
+
+          if(contact.photo){
+            let img = this.el.activePhoto;
+            img.src = contact.photo;
+            img.show();
+          }
+
+          this.el.home.hide()
+          this.el.main.css({ 'display': 'flex' })
+
+        })
 
       this.el.contactsMessagesList.appendChild(div);
 
