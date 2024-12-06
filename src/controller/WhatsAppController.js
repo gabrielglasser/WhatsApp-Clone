@@ -33,7 +33,7 @@ export default class WhatsAppController {
             let photo = this.el.imgPanelEditProfile;
             photo.src = data.photo;
             photo.show();
-            this.el.imgPanelEditProfile.hide();
+            this.el.imgDefaultPanelEditProfile.hide();
 
             let photo2 = this.el.myPhoto.querySelector('img')
             photo2.src = data.photo;
