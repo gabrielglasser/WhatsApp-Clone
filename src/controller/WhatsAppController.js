@@ -136,6 +136,10 @@ export default class WhatsAppController {
   }
 
   setActiveChat(contact) {
+    if (this._contactActive) {
+      Message.getRef(this._contactActive.chatId).onSnapshot(() => {});
+    }
+
     this._contactActive = contact;
 
     this.el.activeName.innerHTML = contact.name;
@@ -149,6 +153,24 @@ export default class WhatsAppController {
 
     this.el.home.hide();
     this.el.main.css({ display: "flex" });
+
+    Message.getRef(this._contactActive.chatId)
+      .orderBy("timeStamp")
+      .onSnapshot((docs) => {
+        this.el.panelMessagesContainer.innerHTML = "";
+        docs.forEach((doc) => {
+          let data = doc.data();
+          data.id = doc.id;
+
+          if (!this.el.panelMessagesContainer.querySelector("#_" + data.id)) {
+            let message = new Message();
+            message.fromJSON(data);
+            let me = (data.from === this._user.email);
+            let view = message.getViewElement(me);
+            this.el.panelMessagesContainer.appendChild(view);
+          }
+        });
+      });
   }
 
   //tranformar os ids em camelCase
@@ -297,7 +319,8 @@ export default class WhatsAppController {
       });
     });
 
-    this.el.contactsMessagesList.querySelectorAll(".contact-item")
+    this.el.contactsMessagesList
+      .querySelectorAll(".contact-item")
       .forEach((item) => {
         item.on("click", (e) => {
           this.el.home.hide();
@@ -486,12 +509,12 @@ export default class WhatsAppController {
     });
 
     this.el.btnSend.on("click", (e) => {
-
       Message.send(
         this._contactActive.chatId,
-        this.el.inputText.innerHTML,
         this._user.email,
-        "text"
+        'text',
+        this.el.inputText.innerHTML,
+        
       );
 
       this.el.inputText.innerHTML = "";
