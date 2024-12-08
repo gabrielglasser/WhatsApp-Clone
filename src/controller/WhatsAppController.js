@@ -5,6 +5,7 @@ import { DocumentPreviewController } from "./DocumentPreviewController";
 import { Firebase } from "./../utils/Firebase";
 import { User } from "./../model/User";
 import { Chat } from "./../model/Chat";
+import { Message } from "./../model/Message";
 
 export default class WhatsAppController {
   constructor() {
@@ -124,17 +125,7 @@ export default class WhatsAppController {
         }
 
         div.on("click", () => {
-          this.el.activeName.innerHTML = contact.name;
-          this.el.activeStatus.innerHTML = contact.status;
-
-          if (contact.photo) {
-            let img = this.el.activePhoto;
-            img.src = contact.photo;
-            img.show();
-          }
-
-          this.el.home.hide();
-          this.el.main.css({ display: "flex" });
+          this.setActiveChat(contact);
         });
 
         this.el.contactsMessagesList.appendChild(div);
@@ -142,6 +133,22 @@ export default class WhatsAppController {
     });
 
     this._user.getContacts();
+  }
+
+  setActiveChat(contact) {
+    this._contactActive = contact;
+
+    this.el.activeName.innerHTML = contact.name;
+    this.el.activeStatus.innerHTML = contact.status;
+
+    if (contact.photo) {
+      let img = this.el.activePhoto;
+      img.src = contact.photo;
+      img.show();
+    }
+
+    this.el.home.hide();
+    this.el.main.css({ display: "flex" });
   }
 
   //tranformar os ids em camelCase
@@ -290,8 +297,7 @@ export default class WhatsAppController {
       });
     });
 
-    this.el.contactsMessagesList
-      .querySelectorAll(".contact-item")
+    this.el.contactsMessagesList.querySelectorAll(".contact-item")
       .forEach((item) => {
         item.on("click", (e) => {
           this.el.home.hide();
@@ -479,7 +485,18 @@ export default class WhatsAppController {
       }
     });
 
-    this.el.btnSend.on("click", (e) => {});
+    this.el.btnSend.on("click", (e) => {
+
+      Message.send(
+        this._contactActive.chatId,
+        this.el.inputText.innerHTML,
+        this._user.email,
+        "text"
+      );
+
+      this.el.inputText.innerHTML = "";
+      this.el.panelEmojis.removeClass("open");
+    });
 
     this.el.btnEmojis.on("click", (e) => {
       this.el.panelEmojis.toggleClass("open");

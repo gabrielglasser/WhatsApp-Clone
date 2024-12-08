@@ -1,32 +1,46 @@
-import { Model } from './Model';
+import { Model } from "./Model";
+import { Firebase } from "../utils/Firebase";
 
 export class Message extends Model {
-
   constructor() {
     super();
   }
 
-  get content() { return this._data.content; }
-  set content(value) { return this._data.content = value; }
+  get content() {
+    return this._data.content;
+  }
+  set content(value) {
+    return (this._data.content = value);
+  }
 
-  get type() { return this._data.type; }
-  set type(value) { return this._data.type = value; }
+  get type() {
+    return this._data.type;
+  }
+  set type(value) {
+    return (this._data.type = value);
+  }
 
-  get timeStamp() { return this._data.timeStamp; }
-  set timeStamp(value) { return this._data.timeStamp = value; }
+  get timeStamp() {
+    return this._data.timeStamp;
+  }
+  set timeStamp(value) {
+    return (this._data.timeStamp = value);
+  }
 
-  get status() { return this._data.status; }
-  set status(value) { return this._data.status = value; }
+  get status() {
+    return this._data.status;
+  }
+  set status(value) {
+    return (this._data.status = value);
+  }
 
   getViewElement(me = true) {
+    let div = document.createElement("div");
 
-    let div = document.createElement('div');
-
-    div.className = 'message';
+    div.className = "message";
 
     switch (this.type) {
-
-      case 'contact':
+      case "contact":
         div.innerHTML = `
 
 <div class="_3_7SH kNKwo  tail">
@@ -75,7 +89,7 @@ export class Message extends Model {
         `;
         break;
 
-      case 'image':
+      case "image":
         div.innerHTML = `    
     <div class="_3_7SH _3qMSo ">
         <div class="KYpDv">
@@ -131,7 +145,7 @@ export class Message extends Model {
         `;
         break;
 
-      case 'document':
+      case "document":
         div.innerHTML = `
         <div class="_3_7SH _1ZPgd ">
             <div class="_1fnMt _2CORf">
@@ -181,7 +195,7 @@ export class Message extends Model {
         `;
         break;
 
-      case 'audio':
+      case "audio":
         div.innerHTML = `
 <div class="_3_7SH _17oKL ">
     <div class="_2N_Df LKbsn">
@@ -285,15 +299,26 @@ export class Message extends Model {
           </div>
       </div>
 
-    `
+    `;
     }
 
-    let className = (me) ? 'message-out' : 'message-in';
+    let className = me ? "message-out" : "message-in";
 
     div.firstElementChild.classList.add(className);
 
     return div;
-
   }
 
+  static send(chatId, from, type, content) {
+    return Message.getRef(chatId).add({
+      content,
+      timeStamp: new Date(),
+      status: "wait",
+      type,
+      from
+    });
+  }
+  static getRef(chatId) {
+    return Firebase.db().collection("chats").doc(chatId).collection("messages");
+  }
 }

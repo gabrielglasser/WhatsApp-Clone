@@ -64,7 +64,7 @@ export class Chat extends Model {
       Chat.find(meEmail, contactEmail)
         .then((chats) => {
           if (chats.empty) {
-            Chat.createIfNotExist(meEmail, contactEmail).then((chat) => {
+            Chat.create(meEmail, contactEmail).then((chat) => {
               resolve(chat);
             });
           } else {
