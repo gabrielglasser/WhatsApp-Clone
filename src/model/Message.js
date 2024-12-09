@@ -2,6 +2,7 @@ import { Model } from "./Model";
 import { Firebase } from "../utils/Firebase";
 import { Format } from "../utils/Format";
 
+
 export class Message extends Model {
   constructor() {
     super();
