@@ -175,7 +175,6 @@ export default class WhatsAppController {
             let me = data.from === this._user.email;
             let view = message.getViewElement(me);
             this.el.panelMessagesContainer.appendChild(view);
-
           }
         });
 
@@ -183,7 +182,7 @@ export default class WhatsAppController {
           this.el.panelMessagesContainer.scrollTop =
             this.el.panelMessagesContainer.scrollHeight -
             this.el.panelMessagesContainer.offsetHeight;
-        }else{
+        } else {
           this.el.panelMessagesContainer.scrollTop = scrollTop;
         }
       });
@@ -262,6 +261,16 @@ export default class WhatsAppController {
   }
 
   initEvents() {
+    this.el.inputSearchcontacts.on("keyup", (e) => {
+      if(this.inputSearchcontacts.value.length > 0){
+        this.inputSearchcontactsPlaceholder.hide();
+      }else{
+        this.inputSearchcontactsPlaceholder.show();
+      };
+
+      this._user.getContacts(this.inputSearchcontacts.value);
+    });
+
     this.el.myPhoto.on("click", (e) => {
       this.closeAllLeftPanel();
       this.el.panelEditProfile.show();
