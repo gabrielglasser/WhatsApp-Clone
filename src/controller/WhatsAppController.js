@@ -169,12 +169,28 @@ export default class WhatsAppController {
           let data = doc.data();
           data.id = doc.id;
 
+          let message = new Message();
+          message.fromJSON(data);
+          let me = data.from === this._user.email;
+
           if (!this.el.panelMessagesContainer.querySelector("#_" + data.id)) {
-            let message = new Message();
-            message.fromJSON(data);
-            let me = data.from === this._user.email;
+            if (!me) {
+              doc.ref.set(
+                {
+                  status: "read",
+                },
+                { merge: true }
+              );
+            }
             let view = message.getViewElement(me);
+
             this.el.panelMessagesContainer.appendChild(view);
+          } else if (me) {
+            let msgEl = this.el.panelMessagesContainer.querySelector(
+              "#_" + data.id
+            );
+            msgEl.querySelector(".message-status").innerHTML =
+              message.getStatusViewElement().outerHTML;
           }
         });
 
@@ -262,11 +278,11 @@ export default class WhatsAppController {
 
   initEvents() {
     this.el.inputSearchcontacts.on("keyup", (e) => {
-      if(this.inputSearchcontacts.value.length > 0){
+      if (this.inputSearchcontacts.value.length > 0) {
         this.inputSearchcontactsPlaceholder.hide();
-      }else{
+      } else {
         this.inputSearchcontactsPlaceholder.show();
-      };
+      }
 
       this._user.getContacts(this.inputSearchcontacts.value);
     });
