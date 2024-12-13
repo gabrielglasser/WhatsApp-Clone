@@ -277,7 +277,7 @@ export default class WhatsAppController {
   }
 
   initEvents() {
-    this.el.inputSearchcontacts.on("keyup", (e) => {
+    this.el.inputSearchcontacts.on("keyup", () => {
       if (this.inputSearchcontacts.value.length > 0) {
         this.inputSearchcontactsPlaceholder.hide();
       } else {
@@ -384,7 +384,9 @@ export default class WhatsAppController {
     });
 
     this.el.inputPhoto.on("change", (e) => {
-      [...this.el.inputPhoto.files].forEach((file) => {});
+      [...this.el.inputPhoto.files].forEach((file) => {
+        Message.sendImage(this._contactActive.chatId, this._user.email, file);
+      });
     });
 
     this.el.btnAttachCamera.on("click", (e) => {
